@@ -22,7 +22,7 @@ def get_page(url):
     return r
 
 
-def extract_courses(page, courselist):
+def extract_courses(page):
     '''Takes soas html object, and returns list of tuples: (course, url).'''
     soup = BeautifulSoup(page.content, 'html.parser')
     courses = soup.find_all('div', class_='coursename')
@@ -33,20 +33,29 @@ def extract_courses(page, courselist):
 
 
 def main():
-    courselist = []
+    coursedict = {}
+    all_courselist = []
+
+    # Get list of [(coursename,url)...]
     for url in url_list:
         page = get_page(url)
-        course = (extract_courses(page, courselist))
-        for item in course:
-            courselist.append(item)
+        courses_on_page = (extract_courses(page))
+        for item in courses_on_page:
+            all_courselist.append(item)
 
-    coursedict = {}
-    courselist.sort()
+    # Clean up list & add headers.
+    courseset = set(all_courselist)
+    all_courselist = list(courseset)
+    all_courselist.sort()
+    number_of_courses = len(all_courselist)
+    all_courselist.insert(0, ('coursename','url'))  # Column headers.
+
+    # Write results
     f = open('course_link_list.csv', 'w')
-    for course in courselist:
+    for course in all_courselist:
         f.write(course[0] + ',' + course[1] + '\n')
     f.close()
-    print(len(courselist), 'courses found')
+    print(number_of_courses, 'courses found')
 
 
 if __name__ == '__main__':
