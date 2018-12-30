@@ -51,7 +51,7 @@ def main():
     all_courselist.insert(0, ('coursename','url'))  # Column headers.
 
     # Write results
-    f = open('course_link_list.csv', 'w')
+    f = open('scraped_course_urls.csv', 'w')
     for course in all_courselist:
         f.write(course[0] + ',' + course[1] + '\n')
     f.close()

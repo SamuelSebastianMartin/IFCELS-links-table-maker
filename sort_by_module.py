@@ -2,19 +2,22 @@
 """
 This takes a csv of coursename,url', and separates the courses into categories
 by IFCELS module [ELAS, ICC, FDPS, Summer, Presessional, Insessional]
+It also tries to identify unused courses.
 """
 
 import pandas as pd
 import re
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 
 def main():
     df, keywords = get_data()
     df = add_id_column(df)
     df = sort_by_id(df)
-    df = add_users_column(df)
+    df = add_users_url_column(df)
     df = add_user_numb(df)
 #    test(df, keywords)
     df.to_csv('IFCELS_Moodle_sorted_by_id.csv')
@@ -33,7 +36,7 @@ def get_data():
     '''Reads csv into dataframe, and defines keyword dictionary to help with
     deciding if a course is ICC or ELAS etc. For example, FDPS tend to use
     the code (pg), 'block' = summer, and 'Term' = ELAS.'''
-    df = pd.read_csv('course_link_list.csv')
+    df = pd.read_csv('scraped_course_urls.csv')
     keywords = {'elas': ['Term', 'A1 ', 'A2 ', 'A3'], 'fdps': ['(pg)']}
     return df, keywords
 
@@ -56,7 +59,7 @@ def sort_by_id(df):
     return df_id
 
 
-def add_users_column(df):
+def add_users_url_column(df):
     '''Makes a new column with the url of the 'enrolled users' page.
     The url involves substituting 'users/index' for 'course/view' in the url.
     '''
@@ -71,34 +74,33 @@ def add_users_column(df):
 
 
 def add_user_numb(df):
+    '''Adds a column with the number of users in each course'''
+    browser = get_browser()
     user_numbs = []
     for url in df['users_url']:
-        page = get_page(url)
-        print(page)
-        user_numbers = get_user_numbers(page)
+        print(url)
+        user_page = browser.get(url)
+        user_numb = find_user_numbers(user_page)
+        user_numbs.append(user_numb)
+    df['no_of_users'] = user_numbs
+    print(df)#
     return df
 
 
-def get_page(url):  # Copied from get_course_urls.py
-    '''Takes url and returns a 'requests' html object.'''
-    r = requests.get(url, auth=('sm2', 'oeurSo61!'))
-    if r.status_code == 200:
-        print('OK\t', r.status_code, url)
-    else:
-        print('ERROR\t', r.status_code, url)
-    return r
+def get_browser():
+    '''Returns selenium browser, logged in to Moodle.'''
+    login = 'https://ble.soas.ac.uk/login/index.php'
+
+    browser = webdriver.Firefox()
+    browser.get(login)
+    browser.find_element_by_id("username").send_keys("sm2")
+    browser.find_element_by_id("password").send_keys("oeurSo61!")
+    browser.find_element_by_id("loginbtn").click()
+    return browser
 
 
-def get_user_numbers(page):
-    '''Takes soas html object, and returns list of tuples: (course, url).'''
-    soup = BeautifulSoup(page.content, 'html.parser')
-    attr = soup.find('div', class_='userlist')
-    print(attr)
-#    user_numbers = attr.p.text
-    return user_numbers
-
-    courselist.append((course.a.text, course.a['href']))
-    return courselist
+def find_user_numbers(page):
+    return 99
 
 if __name__ == '__main__':
     main()
