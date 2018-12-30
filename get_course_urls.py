@@ -14,7 +14,9 @@ url_list = [
 
 def get_page(url):
     '''Takes url and returns a 'requests' html object.'''
-    r = requests.get(url, auth=('sm2', 'oeurSo61!'))
+    import credentials
+    r = requests.get(url, auth=('credentials.username',
+                                'credentials.password'))
     if r.status_code == 200:
         print('OK\t', r.status_code, url)
     else:
