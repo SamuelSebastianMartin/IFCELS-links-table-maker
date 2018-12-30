@@ -7,36 +7,16 @@ It also tries to identify unused courses.
 
 import pandas as pd
 import re
-import requests
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 
 
 def main():
-    df, keywords = get_data()
-    df = add_id_column(df)
-    df = sort_by_id(df)
-    test(df, keywords)
-    df.to_csv('IFCELS_Moodle_sorted_by_id.csv')
-
-
-def test(df, keywords):  #
-    '''To produce test feedback while exploring this code.'''
-    print('TEST DATA')
-    for key in keywords:
-        print(key, keywords[key])
-    print(df)
-    print()
-
-
-def get_data():
-    '''Reads csv into dataframe, and defines keyword dictionary to help with
-    deciding if a course is ICC or ELAS etc. For example, FDPS tend to use
-    the code (pg), 'block' = summer, and 'Term' = ELAS.'''
     df = pd.read_csv('scraped_course_urls.csv')
-    keywords = {'elas': ['Term', 'A1 ', 'A2 ', 'A3'], 'fdps': ['(pg)']}
-    return df, keywords
+    df = add_id_column(df)
+    df.set_index('course_id', inplace=True)
+    df = add_module_names(df)
+
+    df = df.sort_index()
+    print(df[['module', 'coursename']].to_string())
 
 
 def add_id_column(df):
@@ -51,10 +31,24 @@ def add_id_column(df):
     return df
 
 
-def sort_by_id(df):
-    '''Puts courses in order of course id.'''
-    df_id = df.sort_values(by=['course_id'])
-    return df_id
+def add_module_names(df):
+    '''Adds a column with module name: eg 'ELAS' or 'ICC' '''
+    # Simple keywords first: no regex. Will get all but a few.
+    modules = []
+    for name in df['coursename']:
+        if 'term' in name.lower():
+            modules.append('ELAS')
+        elif 'block' in name.lower():
+            modules.append('Summer')
+        elif '(ug)' in name.lower():
+            modules.append('ICC')
+        elif '(pg)' in name.lower():
+            modules.append('FDPS')
+        else:
+            modules.append('not known')
+    df['module'] = modules
+    # Hard cases still to solve.
+    return df
 
 
 if __name__ == '__main__':
