@@ -36,7 +36,7 @@ def add_module_names(df):
     # Simple keywords first: no regex. Will get all but a few.
     modules = []
     for name in df['coursename']:
-        if 'term' in name.lower():
+        if 'term ' in name.lower():  # <space> needed to avoid 'intermediate'.
             modules.append('ELAS')
         elif 'block' in name.lower():
             modules.append('Summer')
@@ -45,10 +45,50 @@ def add_module_names(df):
         elif '(pg)' in name.lower():
             modules.append('FDPS')
         else:
-            modules.append('not known')
+            mod_name = get_hard_names(name)
+            modules.append(mod_name)
     df['module'] = modules
-    # Hard cases still to solve.
     return df
+
+
+def get_hard_names(name):
+    '''Catches the ~9 courses with no obvious module keywords in the name.
+    The ~5 courses with 'academic' in are proccessed first.'''
+    mod_name = ''
+    # Courses with 'academic' in the title.
+    academic = re.compile('academic', re.IGNORECASE)
+    if academic.search(name):
+        hardnames = {
+                'intensive': 'ICC', 'understanding': 'ICC',
+                'teaching': 'Summer'
+                }
+        for keyword in hardnames:
+            srch = re.compile(keyword, re.IGNORECASE)
+            if srch.search(name):
+                mod_name = hardnames[keyword]
+                break
+        # catch awkward FDPS 'Academic English'.
+        srch = re.compile(
+                '^academic\s+?english\s+?a\d{2}/\d{2}\s?', re.IGNORECASE
+                )
+        if srch.search(name):
+            mod_name = 'FDPS'
+
+    else:  # Courses without 'academic' in the title.
+        hardnames = {
+                'research': 'FDPS', 'independent': 'FDPS',
+                'media': 'Summer', 'language': 'FDPS',
+                'european': 'ICC'
+                }
+        for keyword in hardnames:
+            srch = re.compile(keyword, re.IGNORECASE)
+            if srch.search(name):
+                mod_name = hardnames[keyword]
+                break
+            else:
+                mod_name = 'not known'
+
+    return(mod_name)
 
 
 if __name__ == '__main__':
