@@ -16,7 +16,10 @@ def main():
     df = add_module_names(df)
 
     df = df.sort_index()
-    print(df[['module', 'coursename']].to_string())
+    elas, summer, fdps, icc = group_and_split(df)
+    df.to_csv('sorted_courselist.csv')
+    for mod in [elas, summer, fdps, icc]:
+        print(mod[['module', 'coursename']].to_string())
 
 
 def add_id_column(df):
@@ -69,7 +72,7 @@ def get_hard_names(name):
                 break
         # catch awkward FDPS 'Academic English'.
         srch = re.compile(
-                '^academic\s+?english\s+?a\d{2}/\d{2}\s?', re.IGNORECASE
+                r'^academic\s+?english\s+?a\d{2}/\d{2}\s?', re.IGNORECASE
                 )
         if srch.search(name):
             mod_name = 'FDPS'
@@ -89,6 +92,15 @@ def get_hard_names(name):
                 mod_name = 'not known'
 
     return(mod_name)
+
+
+def group_and_split(df):
+    df.groupby('module')
+    elas = df.groupby('module').get_group('ELAS')
+    summer = df.groupby('module').get_group('Summer')
+    fdps = df.groupby('module').get_group('FDPS')
+    icc = df.groupby('module').get_group('ICC')
+    return elas, summer, fdps, icc
 
 
 if __name__ == '__main__':
