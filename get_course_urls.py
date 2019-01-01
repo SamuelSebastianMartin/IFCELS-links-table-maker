@@ -2,6 +2,10 @@
 '''
 Takes the url of all Moodle IFCELS course pages, which are hard coded here,
 and saves a csv of every file with its URL
+If this fails, the most likely problems are a) that the url_list has changed.
+b) that the classname in the html is no longer "coursename". These will have
+to be investigated with "inspect element" in the browser.
+It should find around 88 courses.
 '''
 from bs4 import BeautifulSoup
 import requests
@@ -50,10 +54,10 @@ def main():
     all_courselist = list(courseset)
     all_courselist.sort()
     number_of_courses = len(all_courselist)
-    all_courselist.insert(0, ('coursename','url'))  # Column headers.
+    all_courselist.insert(0, ('coursename', 'url'))  # Column headers.
 
     # Write results
-    f = open('scraped_course_urls.csv', 'w')
+    f = open('courses_scraped_urls.csv', 'w')
     for course in all_courselist:
         f.write(course[0] + ',' + course[1] + '\n')
     f.close()

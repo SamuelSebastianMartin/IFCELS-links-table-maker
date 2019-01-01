@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
 """
-This takes a csv of coursename,url', and separates the courses into categories
-by IFCELS module [ELAS, ICC, FDPS, Summer, Presessional, Insessional]
-It also tries to identify unused courses.
+This takes courses_scraped_urls.csv, a csv of coursename+url', so it must be
+run after get_course_urls.py. It separates the courses into categories
+by IFCELS module [ELAS, ICC, FDPS, Summer, Presessional, Insessional],
+and saves the resulting dataframes as (eg) 'icc.csv', 'summer.csv'. This is
+in preparation to the modules being proccessed individually into html tables.
 """
 
 import pandas as pd
@@ -10,14 +12,18 @@ import re
 
 
 def main():
-    df = pd.read_csv('scraped_course_urls.csv')
+    df = pd.read_csv('courses_scraped_urls.csv')  # From get_course_urls.py
     df = add_id_column(df)
     df.set_index('course_id', inplace=True)
     df = add_module_names(df)
 
     df = df.sort_index()
     elas, summer, fdps, icc = group_and_split(df)
-    df.to_csv('sorted_courselist.csv')
+    elas.to_csv('elas.csv')
+    summer.to_csv('summer.csv')
+    fdps.to_csv('fdps.csv')
+    icc.to_csv('icc.csv')
+    df.to_csv('couselist_sorted.csv')
     for mod in [elas, summer, fdps, icc]:
         print(mod[['module', 'coursename']].to_string())
 
@@ -95,6 +101,7 @@ def get_hard_names(name):
 
 
 def group_and_split(df):
+    '''Splits the entire ICC dataframe into individual modules (eg icc).'''
     df.groupby('module')
     elas = df.groupby('module').get_group('ELAS')
     summer = df.groupby('module').get_group('Summer')
