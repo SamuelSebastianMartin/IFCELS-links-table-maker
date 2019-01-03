@@ -19,11 +19,11 @@ def main():
 
     df = df.sort_index()
     elas, summer, fdps, icc = group_and_split(df)
-    elas.to_csv('elas.csv')
-    summer.to_csv('summer.csv')
-    fdps.to_csv('fdps.csv')
-    icc.to_csv('icc.csv')
-    df.to_csv('couselist_sorted.csv')
+    elas.to_csv('courselist_elas.csv')
+    summer.to_csv('courselist_summer.csv')
+    fdps.to_csv('courselist_fdps.csv')
+    icc.to_csv('courselist_icc.csv')
+    df.to_csv('courses_sorted.csv')
     for mod in [elas, summer, fdps, icc]:
         print(mod[['module', 'coursename']].to_string())
 
