@@ -8,6 +8,7 @@ import re
 def main():
     df = pd.read_csv('courselist_elas.csv')
     add_brief_name(df)
+    add_href(df)
     build_block(df)
     os.system('epiphany html_table.html')
 
@@ -33,6 +34,24 @@ def add_brief_name(df):
 
     df['brief name'] = brief_names
     return brief_names
+
+
+def add_href(df):
+    """Adds a new column to df, giving the html code that will appear in the
+    final table. Whatever is in this code will be placed between the tags
+    which define the table cell: <td> and </td>. Therefore the Name and href
+    must be included: eg '<a href="https://linkpage">Course Name</a>"""
+    hrefs = []
+
+    for index, row in df.iterrows():
+        name = (row['brief name'])
+        url = (row['url'])
+        href = '<a href="' + url + '" >' + name + '</a>'
+        hrefs.append(href)
+    df['href'] = hrefs
+    print(df['href'])
+    return hrefs
+
 
 
 def tricky_names(name, term):
@@ -73,7 +92,7 @@ def build_block(df):
 
 
 def add_rows(block, df):
-    courselist = df['brief name'].tolist()
+    courselist = df['href'].tolist()
     while len(courselist) >= 3:
         a, b, c = courselist[0], courselist[1], courselist[2]
         block.add_row(a, b, c)
