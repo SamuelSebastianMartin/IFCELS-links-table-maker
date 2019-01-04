@@ -10,7 +10,7 @@ def main():
     add_brief_name(df)
     add_href(df)
     build_block(df)
-    os.system('epiphany html_table.html')
+    os.system('epiphany elas_block.html')
 
 
 def add_brief_name(df):
@@ -88,7 +88,7 @@ def build_block(df):
     block.column_headings(td1='Term 1', td2='Term 2', td3='Term 3')
     add_rows(block, df)
 
-    block.write_page()
+    block.write_page('elas_block.html')
 
 
 def add_rows(block, df):
@@ -98,6 +98,16 @@ def add_rows(block, df):
         block.add_row(a, b, c)
         for item in (a, b, c):
             courselist.remove(item)
+    if len(courselist) == 2:
+        a, b, c = courselist[0], courselist[1], ''
+        block.add_row(a, b, c)
+        return
+    elif len(courselist) == 1:
+        a, b, c = courselist[0], '', ''
+        block.add_row(a, b, c)
+        return
+    else:
+        return
 
 
 if __name__ == '__main__':
