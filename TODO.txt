@@ -1,0 +1,15 @@
+Make csv of regex/coursenames for all courses, like 'elas_regex_names.csv'.
+The regex must identify the course uniquely from the long names on Moodle.
+The coursename will be the name that appears in the finished table (eg 'QM').
+The regex column must not have quotation marks of any kind.
+
+Make a function to force term1 courses into coulumn1, and term2: column2 etc.
+This should not fail when the term/block value is 'None'.
+
+Make the program universal by replacing 'elas' with some variabel that can
+take 'elas', 'icc' etc. This will be for the filename when writing the block,
+opening the 'regex_coursename_ .csv' etc - anywhere where 'elas' now appears
+in the code. Also, the 'Title' of the table will need to change with the
+module.
+
+Should this be a class?
