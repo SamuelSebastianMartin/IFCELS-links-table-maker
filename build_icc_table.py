@@ -56,7 +56,7 @@ def add_href(df):
    for index, row in df.iterrows():
        name = (row['brief name'])
        url = (row['url'])
-       href = '<a href="' + url + '" >' + name + '</a>'
+       href = '<a href="' + url + '" target="_blank" >' + name + '</a>'
        hrefs.append(href)
    df['href'] = hrefs
    print(df['href'])

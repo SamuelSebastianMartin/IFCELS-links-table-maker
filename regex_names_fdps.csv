@@ -1,0 +1,14 @@
+regex;name
+\bacademic\Wenglish\b,aeng
+\bbusiness\b,bus
+\bculture.?\b,cult
+\bdevelopment\b,dev
+\bsociety\b,soc
+\bgrammar\b,gram
+\bielts\b,ielts
+\binternational\Wrelations\b,ir
+\bindependent\Wstudy\b,isp
+\blaw\b,law
+\bmedia\b,med
+\bresearch\Wmethods\b,rsch
+\benglish\Wlanguage\b,lang

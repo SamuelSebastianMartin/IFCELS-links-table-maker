@@ -1,0 +1,14 @@
+regex;name
+\bart\b,art
+\bbusiness\b,bus
+\bdevelopment\b,dev
+\beconomic.?\Wtheory\b/,econ
+\beuropean\Wsociety\b,est
+\bhistory\b,hist
+\bintensive\Wenglish\b,aceng
+\blaw\b,law
+\bliterature\b,lit
+\bquantitative\Wmethods\b,qm
+\bmedia\b,med
+\bpolitics\b,pol
+\bUnderstanding\Wthe\WModern\WWorld\b,umw

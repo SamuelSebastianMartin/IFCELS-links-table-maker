@@ -6,29 +6,12 @@ import html_table_class as table
 import re
 
 def main():
-    # Get variable names.
-    module = input('Which module are you building \nelas, fdps, icc, summer: ')
-    year = input('How to display the year? eg 2019-20: ')
-    module = module.lower()
-    module_title = module.upper() + ' Courses: ' + year
-    module_courselist = 'courselist_' + module + '.csv'
-    module_saveas = module + '_block.html'
-    module_regex = 'regex_names_' + module + '.csv'
-    os_instruction = 'epiphany ' + module_saveas
-    if module == 'icc':
-        bg_color = '#d3f486'
-    if module == 'elas':
-        bg_color = '#ffc821'
-    if module == 'fdps':
-        bg_color = '#fdd4ce'
-
-    # Run program.
-    df = pd.read_csv(module_courselist)
+    df = pd.read_csv('courselist_elas.csv')
     add_term(df)
-    add_brief_name(df, module_regex)
+    add_brief_name(df)
     add_href(df)
-    build_block(df, module_saveas, module_title, bg_color)
-    os.system(os_instruction)
+    build_block(df)
+    os.system('epiphany elas_block.html')
 
 
 def add_term(df):
@@ -48,7 +31,7 @@ def add_term(df):
     df['term/block'] = terms
 
 
-def add_brief_name(df, module_regex):
+def add_brief_name(df):
     """Adds a column with the shortened coursename that will be displayed
     in the final table."""
     brief_names = []
@@ -56,7 +39,7 @@ def add_brief_name(df, module_regex):
     for index, row in df.iterrows():
         name = (row['coursename'])
         term = (row['term/block'])
-        brief_name = assign_names(name, module_regex)
+        brief_name = assign_names(name)
         if brief_name:
             brief_names.append(brief_name)
         else:
@@ -66,7 +49,7 @@ def add_brief_name(df, module_regex):
     return brief_names
 
 
-def assign_names(name, module_regex):
+def assign_names(name):
     """Extracts the display name from the coursename.
     The 'regex_names' list is unique for each module (ICC, ELAS etc.), and
     must be hard coded. Each item in the list is a 2-tuple, consisting in
@@ -82,7 +65,7 @@ def assign_names(name, module_regex):
 
     else:
         # Other courses: read the list of regex/name pairs.
-        regex_names = pd.read_csv(module_regex, sep=';')
+        regex_names = pd.read_csv('elas_regex_names.csv', sep=';')
 
         for index, row in regex_names.iterrows():
             regex = row['regex']
@@ -109,17 +92,14 @@ def add_href(df):
     return hrefs
 
 
-def build_block(df, module_saveas, module_title, bg_color):
+def build_block(df):
     block = table.HtmlTable()
-    block.bg_color = bg_color
-    block.table_header(title=module_title)
-    if 'elas' in module_saveas or 'summer' in module_saveas:
-        #  Only make columns for ELAS and SUMMER.
-        block.table_columns()
-        block.column_headings(td1='Term 1', td2='Term 2', td3='Term 3')
+    block.table_header(title='ELAS Courses: 2018/19')
+    block.table_columns()
+    block.column_headings(td1='Term 1', td2='Term 2', td3='Term 3')
     add_rows(block, df)
 
-    block.write_page(module_saveas)
+    block.write_page('elas_block.html')
 
 
 def add_rows(block, df):
