@@ -90,6 +90,7 @@ def assign_names(name, module_regex):
                 return row['name']
 
     # In the unlikely event of no match found:
+    import pdb; pdb.set_trace()#
     return None
 
 

@@ -1,9 +1,9 @@
 regex;name
-art,art
-humanities,hum
-business,bus
-ielts,ielts
-language\Wskills,els
-media,med
-research\Wmethods,rsch
-social\Wsciences,soc
+art;Art
+humanities;Hum
+business;Bus
+ielts;ielts
+language\Wskills;ELS
+media;Med
+research\Wmethods;Rsch
+social\Wsciences;SocSci

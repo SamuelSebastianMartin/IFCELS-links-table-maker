@@ -1,8 +1,0 @@
-(re.compile(r'\bart\b', re.IGNORECASE).search(name), 'Art')      
-(re.compile(r'\bhumanities\b', re.IGNORECASE).search(name), 'Humanities')
-(re.compile(r'\bbusiness\b', re.IGNORECASE).search(name), 'Business')
-(re.compile(r'\bielts\b', re.IGNORECASE).search(name), 'IELTS')
-(re.compile(r'\blanguage\Wskills\b', re.IGNORECASE).search(name), 'ELS practice')
-(re.compile(r'\bmedia\b', re.IGNORECASE).search(name), 'Media')
-(re.compile(r'\bresearch\Wmethods\b', re.IGNORECASE).search(name), 'Research Meth')
-(re.compile(r'\bsocial\Wsciences\b', re.IGNORECASE).search(name), 'Social Sci')
