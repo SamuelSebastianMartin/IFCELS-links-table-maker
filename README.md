@@ -1,6 +1,6 @@
 This moves from a list of URLs (the Moodle IFCELS pages) to a complete html table code for each IFCELS module (ICC, ELAS etc).
 
-##USE
+## USE
 
    `python3 index.py`
     Note that the list of URLs in `index.py` will have to be updated manually each year.
@@ -45,7 +45,7 @@ In the same calls, `epiphany` browser is used.
 - `regex_names_icc.csv`
 
 ## Troubleshooting.
-All 'os.system' calls are written for Linux only.
+All `os.system` calls are written for Linux only.
     Some 'os.system' calls require epiphany-browser. Can change to firefox or anything.
     If the final table contents contain 'No Name' in any or all cells,
     it is probably a problem with the regex csv's. They are saved
