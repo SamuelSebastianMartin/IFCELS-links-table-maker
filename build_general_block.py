@@ -1,14 +1,43 @@
 #! /usr/bin/env python3
 
+"""
+Given the input of the name of a course module (eg ICC, ELAS etc.)
+This program produces an html table which displays all the Moodle
+courses in that module, with links to the Moodle page.
+It requires:
+    a list of 'regex_names_***.csv' to match the coursename to the
+    abbreviated name displayed in the table.
+    'courselist_****.csv', which is output from 'sort_by_module.py'.
+    The helper class 'html_table_class.py'
+Possible Errors:
+    All 'os.system' calls are written for Linux only.
+    Some 'os.system' calls require epiphany-browser. Can change to anything.
+    If the final table contents contain 'No Name' in any or all cells,
+    it is probably a problem with the regex csv's. They are saved
+    as, for eg, 'regex_names_elas.csv'
+"""
 import pandas as pd
 import os
 import html_table_class as table
 import re
 
+
 def main():
+    """
+    'main()' is really a wrapper for 'compile_table_block()' so
+    the program can run as a stand-alone.
+    """
+    module = input('Which Module are you building,\
+                    \nELAS, ICC, FDPS or Summer: ')
+    block = compile_table_block(module)
+
+
+def compile_table_block(module, year='2019-20'):
+    """
+    When passed the name of a module, it outputs a html table, and
+    saves it as '*module_name*_block.html'.
+    """
     # Get variable names.
-    module = input('Which module are you building \nelas, fdps, icc, summer: ')
-    year = input('How to display the year? eg 2019-20: ')
     module = module.lower()
     module_title = module.upper() + ' Courses: ' + year
     module_courselist = 'courselist_' + module + '.csv'
@@ -23,16 +52,17 @@ def main():
         bg_color = '#fdd4ce'
 
     # Run program.
-    df = pd.read_csv(module_courselist)
-    add_term(df)
+    df = pd.read_csv(module_courselist)  # Output from sort_by_module.py
+    add_term(df)  # Extra column on dataframe
     add_brief_name(df, module_regex)
     add_href(df)
-    build_block(df, module_saveas, module_title, bg_color)
-    os.system(os_instruction)
+    block = build_block(df, module_saveas, module_title, bg_color)
+    os.system(os_instruction)  # Opens in browser, for test.
+    return block
 
 
 def add_term(df):
-    "Adds a column with the term number"
+    "Adds a column to the dataframe with the term/block number"
     terms = []
 
     for index, row in df.iterrows():
@@ -70,7 +100,7 @@ def assign_names(name, module_regex):
     """Extracts the display name from the coursename.
     The 'regex_names' list is unique for each module (ICC, ELAS etc.), and
     must be hard coded. Each item in the list is a 2-tuple, consisting in
-    a regex to identify the course from the official course title, and 
+    a regex to identify the course from the official course title, and
     a display name for the table. Each regex will match only one result,
     except ELAS A1, A2 etc, which reterns the group() of the regex"""
 
@@ -86,11 +116,10 @@ def assign_names(name, module_regex):
 
         for index, row in regex_names.iterrows():
             regex = row['regex']
-            if re.compile(regex, re.IGNORECASE).search(name):  # Check regex search
+            if re.compile(regex, re.IGNORECASE).search(name):  # if regex found
                 return row['name']
 
     # In the unlikely event of no match found:
-    import pdb; pdb.set_trace()#
     return None
 
 
@@ -121,16 +150,21 @@ def build_block(df, module_saveas, module_title, bg_color):
     add_rows(block, df)
 
     block.write_page(module_saveas)
+    return block
 
 
 def add_rows(block, df):
+    """
+    Adds the row of links and names. This is the actual content,
+    once the column headers and title are done.
+    """
     courselist = df['href'].tolist()
-    while len(courselist) >= 3:
+    while len(courselist) >= 3:  # Only works for 3 columns
         a, b, c = courselist[0], courselist[1], courselist[2]
         block.add_row(a, b, c)
         for item in (a, b, c):
             courselist.remove(item)
-    if len(courselist) == 2:
+    if len(courselist) == 2:  # Deal with remainders
         a, b, c = courselist[0], courselist[1], ''
         block.add_row(a, b, c)
         return
