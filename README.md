@@ -8,7 +8,7 @@ This moves from a list of URLs (the Moodle IFCELS pages) to a complete html tabl
 They are obtained from https://ble.soas.ac.uk/course/index.php, then follow the link to IFCELS. There will be ~3 pages of links and ~88 courses.
 Paste the urls into the code.
 
-##What to expect
+## What to expect
 1. the urls are scaped for courses, with `OK 200` sent to standard-out for each url.
 
 2. courses are sorted, and the list of courses sent to standard-out
@@ -31,15 +31,15 @@ the program to continue to the next phase.
 Some of the code requires Linux `os.system('...')` calls.
 In the same calls, `epiphany` browser is used.
 
-###This file must be in the same directory as
-####Programs:
+### This file must be in the same directory as
+#### Programs:
 
 - `get_course_urls.py`
 - `sort_by_module.py`
 - `build_general_block.py`
 - `html_table_class.py`
 - `credentials.py`
-####Data:
+#### Data:
 - `regex_names_elas.csv`  # Check here if coursenames change
 - `regex_names_fdps.csv`
 - `regex_names_icc.csv`
