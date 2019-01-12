@@ -10,7 +10,7 @@ It should find around 88 courses.
 from bs4 import BeautifulSoup
 import requests
 
-url_list = [
+urls = [
         'https://ble.soas.ac.uk/course/index.php?categoryid=103',
         'https://ble.soas.ac.uk/course/index.php?categoryid=103&browse=courses&perpage=30&page=1',
         'https://ble.soas.ac.uk/course/index.php?categoryid=103&browse=courses&perpage=30&page=2']
@@ -38,7 +38,7 @@ def extract_courses(page):
     return courselist
 
 
-def main():
+def main(url_list=urls):
     coursedict = {}
     all_courselist = []
 
