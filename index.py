@@ -26,6 +26,8 @@ follow the link to IFCELS. There will be ~3 pages of links and ~88 courses.
 Paste the urls into the code below.
 """
 
+import os
+
 import get_course_urls
 import sort_by_module
 import build_general_block
@@ -36,12 +38,19 @@ urls = [  # Change these URLs every year
     'https://ble.soas.ac.uk/course/index.php?categoryid=103&browse=courses&perpage=30&page=2'
         ]
 
+
 def main():
 
     get_course_urls.main(urls)
     sort_by_module.main()
     for module in ('elas', 'fdps', 'icc'):
-        build_general_block.compile_table_block(module, year='2018-19')
+        build_general_block.compile_table_block(module, year='2019-20')
+
+    # Save elas, fdps & icc together in single block
+    os.system('cat elas_block.html > ifcels_moodle_all_links.html')
+    os.system('cat fdps_block.html >> ifcels_moodle_all_links.html')
+    os.system('cat icc_block.html >> ifcels_moodle_all_links.html')
+
 
 if __name__ == '__main__':
     main()
