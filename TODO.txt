@@ -1,4 +1,6 @@
-Make a function to force term1 courses into coulumn1, and term2: column2 etc.
+- Read the year so that it updates automatically
+
+- Make a function to force term1 courses into coulumn1, and term2: column2 etc.
 This should not fail when the term/block value is 'None'.
 
-Should this be a class?
+- Should this be a class?
